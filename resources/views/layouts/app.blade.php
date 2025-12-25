@@ -159,38 +159,46 @@
 
             /* Smooth Badges */
             .badge {
-                font-weight: 500;
-                padding: 0.5em 0.8em;
-                border-radius: 6px;
+                font-weight: 600;
+                padding: 0.5em 0.9em;
+                border-radius: 8px;
                 letter-spacing: 0.02em;
             }
+
             .badge.bg-primary {
-                background-color: #eff6ff !important; /* Blue 50 */
-                color: #1d4ed8 !important;   /* Blue 700 */
+                background: linear-gradient(135deg, #818cf8 0%, #a78bfa 100%) !important;
+                color: #ffffff !important;
+                border: none;
             }
             .badge.bg-success {
-                background-color: #ecfdf5 !important; /* Emerald 50 */
-                color: #047857 !important;   /* Emerald 700 */
+                background: linear-gradient(135deg, #34d399 0%, #10b981 100%) !important;
+                color: #ffffff !important;
+                border: none;
             }
             .badge.bg-danger {
-                background-color: #fef2f2 !important; /* Red 50 */
-                color: #b91c1c !important;   /* Red 700 */
+                background: linear-gradient(135deg, #fb7185 0%, #f472b6 100%) !important;
+                color: #ffffff !important;
+                border: none;
             }
             .badge.bg-warning {
-                background-color: #fffbeb !important; /* Amber 50 */
-                color: #b45309 !important;   /* Amber 700 */
+                background: linear-gradient(135deg, #fbbf24 0%, #fb923c 100%) !important;
+                color: #ffffff !important;
+                border: none;
             }
             .badge.bg-info {
-                background-color: #ecfeff !important; /* Cyan 50 */
-                color: #0e7490 !important;   /* Cyan 700 */
+                background: linear-gradient(135deg, #38bdf8 0%, #22d3ee 100%) !important;
+                color: #ffffff !important;
+                border: none;
             }
             .badge.bg-secondary {
-                background-color: #f3f4f6 !important; /* Gray 100 */
-                color: #374151 !important;   /* Gray 700 */
+                background: linear-gradient(135deg, #a78bfa 0%, #c4b5fd 100%) !important;
+                color: #ffffff !important;
+                border: none;
             }
             .badge.bg-dark {
-                background-color: #f8fafc !important; /* Slate 50 */
-                color: #0f172a !important;   /* Slate 900 */
+                background: linear-gradient(135deg, #64748b 0%, #94a3b8 100%) !important;
+                color: #ffffff !important;
+                border: none;
             }
             .alert .btn-close:hover {
                 opacity: 1;

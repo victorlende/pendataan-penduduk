@@ -20,8 +20,60 @@ class PendudukController extends Controller
 
         $query = Penduduk::query()->with('kk.dusun');
 
+        // Filter by verification status
         if ($status && $status !== 'all') {
             $query->where('status', $status);
+        }
+
+        // Filter by NIK
+        if ($request->filled('nik')) {
+            $query->where('nik', 'like', '%' . $request->nik . '%');
+        }
+
+        // Filter by Nama
+        if ($request->filled('nama')) {
+            $query->where('nama_lengkap', 'like', '%' . $request->nama . '%');
+        }
+
+        // Filter by Jenis Kelamin
+        if ($request->filled('jenis_kelamin')) {
+            $query->where('jenis_kelamin', $request->jenis_kelamin);
+        }
+
+        // Filter by Dusun
+        if ($request->filled('dusun_id')) {
+            $query->whereHas('kk', function($q) use ($request) {
+                $q->where('dusun_id', $request->dusun_id);
+            });
+        }
+
+        // Filter by RT
+        if ($request->filled('rt')) {
+            $query->whereHas('kk', function($q) use ($request) {
+                $q->where('rt', $request->rt);
+            });
+        }
+
+        // Filter by RW
+        if ($request->filled('rw')) {
+            $query->whereHas('kk', function($q) use ($request) {
+                $q->where('rw', $request->rw);
+            });
+        }
+
+        // Filter by Agama
+        if ($request->filled('agama')) {
+            $query->where('agama', $request->agama);
+        }
+
+        // Filter by Status Kependudukan
+        if ($request->filled('status_penduduk')) {
+            $query->where('status_penduduk', $request->status_penduduk);
+        }
+
+        // Filter by Pekerjaan
+        if ($request->filled('pekerjaan')) {
+            $query->where('pekerjaan', 'like', '%' . $request->pekerjaan . '%');
         }
 
         $penduduk = $query->latest()->get();

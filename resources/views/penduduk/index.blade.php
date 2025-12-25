@@ -27,13 +27,120 @@
         </li>
     </ul>
 
-    <div class="card">
-        <div class="card-body">
+
             @if(session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
                 </div>
             @endif
+
+            <!-- Filter Form -->
+            <div class="card mb-4" style="background-color: #f9fafb; border: 1px solid #e5e7eb;">
+
+                <div class="collapse show" id="filterCollapse">
+                    <div class="card-body">
+                        <form action="{{ route('penduduk.index') }}" method="GET" id="filterForm">
+                            <input type="hidden" name="status" value="{{ $currentStatus }}">
+
+                            <div class="row g-3">
+                                <!-- Filter NIK -->
+                                <div class="col-md-3">
+                                    <label for="filter_nik" class="form-label fw-medium">NIK</label>
+                                    <input type="text" class="form-control" id="filter_nik" name="nik"
+                                           placeholder="Cari NIK..." value="{{ request('nik') }}">
+                                </div>
+
+                                <!-- Filter Nama -->
+                                <div class="col-md-3">
+                                    <label for="filter_nama" class="form-label fw-medium">Nama Lengkap</label>
+                                    <input type="text" class="form-control" id="filter_nama" name="nama"
+                                           placeholder="Cari nama..." value="{{ request('nama') }}">
+                                </div>
+
+                                <!-- Filter Jenis Kelamin -->
+                                <div class="col-md-3">
+                                    <label for="filter_jk" class="form-label fw-medium">Jenis Kelamin</label>
+                                    <select class="form-select" id="filter_jk" name="jenis_kelamin">
+                                        <option value="">Semua</option>
+                                        <option value="L" {{ request('jenis_kelamin') == 'L' ? 'selected' : '' }}>Laki-laki</option>
+                                        <option value="P" {{ request('jenis_kelamin') == 'P' ? 'selected' : '' }}>Perempuan</option>
+                                    </select>
+                                </div>
+
+                                <!-- Filter Dusun -->
+                                <div class="col-md-3">
+                                    <label for="filter_dusun" class="form-label fw-medium">Dusun</label>
+                                    <select class="form-select" id="filter_dusun" name="dusun_id">
+                                        <option value="">Semua Dusun</option>
+                                        @foreach(\App\Models\Dusun::all() as $dusun)
+                                            <option value="{{ $dusun->id }}" {{ request('dusun_id') == $dusun->id ? 'selected' : '' }}>
+                                                {{ $dusun->nama_dusun }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <!-- Filter RT -->
+                                <div class="col-md-2">
+                                    <label for="filter_rt" class="form-label fw-medium">RT</label>
+                                    <input type="text" class="form-control" id="filter_rt" name="rt"
+                                           placeholder="RT..." value="{{ request('rt') }}">
+                                </div>
+
+                                <!-- Filter RW -->
+                                <div class="col-md-2">
+                                    <label for="filter_rw" class="form-label fw-medium">RW</label>
+                                    <input type="text" class="form-control" id="filter_rw" name="rw"
+                                           placeholder="RW..." value="{{ request('rw') }}">
+                                </div>
+
+                                <!-- Filter Agama -->
+                                <div class="col-md-3">
+                                    <label for="filter_agama" class="form-label fw-medium">Agama</label>
+                                    <select class="form-select" id="filter_agama" name="agama">
+                                        <option value="">Semua Agama</option>
+                                        <option value="Islam" {{ request('agama') == 'Islam' ? 'selected' : '' }}>Islam</option>
+                                        <option value="Kristen" {{ request('agama') == 'Kristen' ? 'selected' : '' }}>Kristen</option>
+                                        <option value="Katolik" {{ request('agama') == 'Katolik' ? 'selected' : '' }}>Katolik</option>
+                                        <option value="Hindu" {{ request('agama') == 'Hindu' ? 'selected' : '' }}>Hindu</option>
+                                        <option value="Buddha" {{ request('agama') == 'Buddha' ? 'selected' : '' }}>Buddha</option>
+                                        <option value="Konghucu" {{ request('agama') == 'Konghucu' ? 'selected' : '' }}>Konghucu</option>
+                                    </select>
+                                </div>
+
+                                <!-- Filter Status Kependudukan -->
+                                <div class="col-md-3">
+                                    <label for="filter_status_penduduk" class="form-label fw-medium">Status Kependudukan</label>
+                                    <select class="form-select" id="filter_status_penduduk" name="status_penduduk">
+                                        <option value="">Semua Status</option>
+                                        <option value="Tetap" {{ request('status_penduduk') == 'Tetap' ? 'selected' : '' }}>Tetap</option>
+                                        <option value="Sementara" {{ request('status_penduduk') == 'Sementara' ? 'selected' : '' }}>Sementara</option>
+                                    </select>
+                                </div>
+
+                                <!-- Filter Pekerjaan -->
+                                <div class="col-md-2">
+                                    <label for="filter_pekerjaan" class="form-label fw-medium">Pekerjaan</label>
+                                    <input type="text" class="form-control" id="filter_pekerjaan" name="pekerjaan"
+                                           placeholder="Pekerjaan..." value="{{ request('pekerjaan') }}">
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="d-flex gap-2 mt-4">
+                                <button type="submit" class="btn btn-primary d-flex align-items-center gap-2">
+                                    <i data-lucide="search" style="width: 16px; height: 16px;"></i>
+                                    Terapkan Filter
+                                </button>
+                                <a href="{{ route('penduduk.index', ['status' => $currentStatus]) }}" class="btn btn-light d-flex align-items-center gap-2">
+                                    <i data-lucide="x" style="width: 16px; height: 16px;"></i>
+                                    Reset Filter
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
 
             <div class="table-responsive mt-3">
                 <table class="table table-sm table-bordered table-hover" id="penduduk-table">
@@ -109,14 +216,29 @@
                 </div>
             </div>
         </div>
-    </div>
-</div>
+
 @endsection
 
 @section('scripts')
 <script>
     $(document).ready(function() {
-        $('#penduduk-table').DataTable();
+        // DataTable without search (because we have custom filter)
+        $('#penduduk-table').DataTable({
+            searching: false,  // Disable default search
+            language: {
+                lengthMenu: "Tampilkan _MENU_ data per halaman",
+                info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+                infoEmpty: "Tidak ada data",
+                infoFiltered: "(difilter dari _MAX_ total data)",
+                zeroRecords: "Data tidak ditemukan",
+                paginate: {
+                    first: "Pertama",
+                    last: "Terakhir",
+                    next: "Selanjutnya",
+                    previous: "Sebelumnya"
+                }
+            }
+        });
 
         $('#deleteModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);
@@ -129,7 +251,10 @@
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl)
-        })
+        });
+
+        // Reinitialize Lucide icons after page load
+        lucide.createIcons();
     });
 </script>
 @endsection
