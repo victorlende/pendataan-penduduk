@@ -111,6 +111,13 @@ class PendudukController extends Controller
             'pendidikan_terakhir' => 'nullable|string',
             'pekerjaan' => 'nullable|string',
             'alamat_lengkap' => 'required|string',
+            'golongan_darah' => 'nullable|string',
+            'kewarganegaraan' => 'required|string',
+            'status_dalam_keluarga' => 'required|string',
+            'nama_ayah' => 'required|string',
+            'nama_ibu' => 'required|string',
+            'no_telp' => 'nullable|string',
+            'photo_ktp' => 'nullable|image|max:2048', // Max 2MB
         ]);
 
         $kk = Kk::findOrFail($request->kk_id);
@@ -119,7 +126,12 @@ class PendudukController extends Controller
         $data['created_by'] = Auth::id();
         $data['no_kk'] = $kk->no_kk; // Get no_kk from the selected KK
         $data['rt_rw'] = $kk->rt . '/' . $kk->rw; // Get rt_rw from the selected KK
+        $data['dusun_id'] = $kk->dusun_id; // Inherit dusun from KK
         $data['status'] = 'verified'; // Data added by admin is automatically verified
+
+        if ($request->hasFile('photo_ktp')) {
+            $data['photo_ktp'] = $request->file('photo_ktp')->store('ktp_photos', 'public');
+        }
 
         Penduduk::create($data);
 
@@ -163,6 +175,13 @@ class PendudukController extends Controller
             'pendidikan_terakhir' => 'nullable|string',
             'pekerjaan' => 'nullable|string',
             'alamat_lengkap' => 'required|string',
+            'golongan_darah' => 'nullable|string',
+            'kewarganegaraan' => 'required|string',
+            'status_dalam_keluarga' => 'required|string',
+            'nama_ayah' => 'required|string',
+            'nama_ibu' => 'required|string',
+            'no_telp' => 'nullable|string',
+            'photo_ktp' => 'nullable|image|max:2048',
         ]);
 
         $kk = Kk::findOrFail($request->kk_id);
@@ -170,6 +189,15 @@ class PendudukController extends Controller
         $data = $request->all();
         $data['no_kk'] = $kk->no_kk; // Update no_kk from the selected KK
         $data['rt_rw'] = $kk->rt . '/' . $kk->rw; // Update rt_rw from the selected KK
+        $data['dusun_id'] = $kk->dusun_id; // Update dusun from KK
+
+        if ($request->hasFile('photo_ktp')) {
+            // Delete old photo if exists
+            if ($penduduk->photo_ktp && \Illuminate\Support\Facades\Storage::disk('public')->exists($penduduk->photo_ktp)) {
+                 \Illuminate\Support\Facades\Storage::disk('public')->delete($penduduk->photo_ktp);
+            }
+            $data['photo_ktp'] = $request->file('photo_ktp')->store('ktp_photos', 'public');
+        }
 
         $penduduk->update($data);
 
