@@ -17,7 +17,7 @@
                     <!-- Konfigurasi Saat Ini -->
                     <div class="card bg-light border-0 mb-4">
                         <div class="card-body">
-                            <h6 class="text-uppercase text-muted fw-bold small mb-2">Konfigurasi Saat Ini (.env)</h6>
+                            <h6 class="text-uppercase text-muted fw-bold small mb-2">Konfigurasi Saat Ini</h6>
                             <div class="d-flex align-items-center justify-content-between">
                                 <div>
                                     @if($currentChatId)
@@ -69,7 +69,6 @@
                         </ol>
                     </div>
 
-                    <!-- Tombol Refresh -->
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h6 class="fw-bold mb-0">Pesan Terakhir (Updates)</h6>
                         <a href="{{ route('notifications.adminTelegramSetup') }}" class="btn btn-primary btn-sm d-flex align-items-center gap-2">
@@ -77,9 +76,8 @@
                         </a>
                     </div>
 
-                    <!-- Tabel Updates -->
                     @if(count($updates) > 0)
-                        <div class="table-responsive rounded border">
+                        <div class="table-responsive border">
                             <table class="table table-hover mb-0 align-middle">
                                 <thead class="bg-light">
                                     <tr>

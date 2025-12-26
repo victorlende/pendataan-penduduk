@@ -42,7 +42,7 @@
                             <td>
                                 @if($p->dusun)
                                     <span class="badge bg-info d-flex align-items-center gap-1 w-fit-content">
-                                        <i data-lucide="map-pin" style="width: 12px; height: 12px;"></i>
+                                        <!-- <i data-lucide="map-pin" style="width: 12px; height: 12px;"></i> -->
                                         {{ $p->dusun->nama_dusun }}
                                     </span>
                                 @else

@@ -258,14 +258,11 @@
                     </button>
 
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <!-- Left Side Of Navbar -->
                         <ul class="navbar-nav me-auto">
 
                         </ul>
 
-                        <!-- Right Side Of Navbar -->
                         <ul class="navbar-nav ms-auto">
-                            <!-- Authentication Links -->
                             @guest
                                 @if (Route::has('login'))
                                     <li class="nav-item">
@@ -337,7 +334,7 @@
                         @if(auth()->user()->role == 'admin')
                             <div class="sidebar-heading">Main</div>
                             <a class="nav-link {{ request()->routeIs('kk.*') ? 'active' : '' }}" href="{{ route('kk.index') }}">
-                                <i data-lucide="notebook-tabs"></i>
+                                <i data-lucide="file-check"></i>
                                 Kartu Keluarga
                             </a>
                             <a class="nav-link {{ request()->routeIs('penduduk.index') ? 'active' : '' }}" href="{{ route('penduduk.index') }}">

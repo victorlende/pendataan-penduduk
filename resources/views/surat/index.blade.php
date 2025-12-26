@@ -4,7 +4,7 @@
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h3 class="mb-0">Permohonan Surat Keterangan</h3>
-        <a href="{{ route('letter-templates.index') }}" class="btn btn-outline-primary">
+        <a href="{{ route('letter-templates.index') }}" class="btn btn-primary">
             <i data-lucide="file-edit" style="width: 18px; height: 18px;"></i> Kelola Isi Surat
         </a>
     </div>

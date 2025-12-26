@@ -13,7 +13,7 @@
             @endif
 
             <div class="card border rounded-4">
-                <div class="card-body p-4">
+                <div class="card-body p-2">
 
                     @if(session('success'))
                         <div class="alert alert-success d-flex align-items-center mb-4 rounded-3 border-0 bg-success bg-opacity-10 text-success">

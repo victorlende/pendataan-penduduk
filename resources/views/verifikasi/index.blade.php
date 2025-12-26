@@ -110,14 +110,14 @@
                                 </td>
                             </tr>
                             @endforeach
-                        </tbody>
+                        </tbody>s
                     </table>
                 </div>
             @else
                 <div class="text-center py-5">
                     <div class="mb-4">
-                        <div class="d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px; background: linear-gradient(135deg, #34d399 0%, #10b981 100%); border-radius: 50%;">
-                            <i data-lucide="check-circle" style="width: 40px; height: 40px; color: white;"></i>
+                        <div class="d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background: linear-gradient(135deg, #34d39965 0%, #10b98183 100%); border-radius: 50%;">
+                            <i data-lucide="badge-check" style="width: 30px; height: 30px;"></i>
                         </div>
                     </div>
                     <h5 class="fw-semibold mb-2">Semua Akun Terverifikasi</h5>
