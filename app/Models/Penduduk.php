@@ -42,6 +42,7 @@ class Penduduk extends Model
         'synced_at',
         'kk_id',
         'status_penduduk',
+        'dusun_id',
     ];
 
     protected $casts = [
@@ -103,12 +104,17 @@ class Penduduk extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    /**
-     * Relasi ke Surat Keterangan
-     */
     public function suratKeterangan()
     {
         return $this->hasMany(SuratKeterangan::class, 'pemohon_id');
+    }
+
+    /**
+     * Relasi ke Dusun
+     */
+    public function dusun()
+    {
+        return $this->belongsTo(Dusun::class);
     }
 
     /**

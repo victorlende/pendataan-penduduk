@@ -4,9 +4,14 @@
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h3>Surat Saya</h3>
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#requestModal">
-            <i data-lucide="plus-circle" class="me-1"></i> Buat Pengajuan
-        </button>
+        <div>
+            <a href="{{ route('notifications.userTelegramSetup') }}" class="btn btn-success me-2">
+                <i class="bi bi-telegram"></i> Notifikasi Telegram
+            </a>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#requestModal">
+                <i class="bi bi-plus-lg me-1"></i> Buat Pengajuan
+            </button>
+        </div>
     </div>
 
     @if(session('success'))
@@ -22,8 +27,7 @@
         </div>
     @endif
 
-    <div class="card">
-        <div class="card-body">
+
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
@@ -62,8 +66,7 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+
 
     <!-- Modal Pengajuan -->
     <div class="modal fade" id="requestModal" tabindex="-1" aria-labelledby="requestModalLabel" aria-hidden="true">

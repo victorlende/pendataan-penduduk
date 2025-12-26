@@ -28,6 +28,7 @@
                             <th>Nama</th>
                             <th>Email</th>
                             <th>Nomor HP</th>
+                            <th>Lokasi Tugas</th>
                             <th class="text-center">Aksi</th>
                         </tr>
                     </thead>
@@ -38,13 +39,26 @@
                             <td>{{ $p->name }}</td>
                             <td>{{ $p->email }}</td>
                             <td>{{ $p->phone_number }}</td>
+                            <td>
+                                @if($p->dusun)
+                                    <span class="badge bg-info d-flex align-items-center gap-1 w-fit-content">
+                                        <i data-lucide="map-pin" style="width: 12px; height: 12px;"></i>
+                                        {{ $p->dusun->nama_dusun }}
+                                    </span>
+                                @else
+                                    <span class="badge bg-secondary opacity-50">Belum ada</span>
+                                @endif
+                            </td>
                             <td class="text-nowrap text-center">
-                                <a href="{{ route('petugas.edit', $p->id) }}" class="btn btn-sm btn-icon-action" title="Edit" aria-label="Edit">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                                <button type="button" class="btn btn-sm btn-icon-action" title="Atur Wilayah" data-bs-toggle="modal" data-bs-target="#assignModal{{ $p->id }}" data-bs-toggle="tooltip" data-bs-placement="top">
+                                    <i data-lucide="map-pin" style="width: 16px; height: 16px;"></i>
+                                </button>
+                                <a href="{{ route('petugas.edit', $p->id) }}" class="btn btn-sm btn-icon-action" title="Edit" aria-label="Edit" data-bs-toggle="tooltip" data-bs-placement="top">
+                                    <i data-lucide="pencil" style="width: 16px; height: 16px;"></i>
                                 </a>
 
-                                <button type="button" class="btn btn-sm btn-icon-action" data-bs-toggle="modal" data-bs-target="#deleteModal" data-action="{{ route('petugas.destroy', $p->id) }}" title="Hapus" aria-label="Hapus">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                                <button type="button" class="btn btn-sm btn-icon-action" data-bs-toggle="modal" data-bs-target="#deleteModal" data-action="{{ route('petugas.destroy', $p->id) }}" title="Hapus" aria-label="Hapus" data-bs-toggle="tooltip" data-bs-placement="top">
+                                    <i data-lucide="trash-2" style="width: 16px; height: 16px;"></i>
                                 </button>
                             </td>
                         </tr>
@@ -77,6 +91,39 @@
             </div>
         </div>
     </div>
+    @foreach($petugas as $p)
+    <div class="modal fade" id="assignModal{{ $p->id }}" tabindex="-1" aria-labelledby="assignModalLabel{{ $p->id }}" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="assignModalLabel{{ $p->id }}">Atur Wilayah Tugas - {{ $p->name }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('petugas.assignDusun', $p->id) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="dusun_id" class="form-label">Pilih Wilayah Dusun</label>
+                            <select class="form-select" name="dusun_id" required>
+                                <option value="" disabled selected>-- Pilih Dusun --</option>
+                                @foreach($dusuns as $dusun)
+                                    <option value="{{ $dusun->id }}" {{ $p->dusun_id == $dusun->id ? 'selected' : '' }}>
+                                        {{ $dusun->nama_dusun }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    @endforeach
 </div>
 @endsection
 

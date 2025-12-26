@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Dusun;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -13,8 +14,9 @@ class PetugasController extends Controller
      */
     public function index()
     {
-        $petugas = User::where('role', 'petugas')->latest()->get();
-        return view('petugas.index', compact('petugas'));
+        $petugas = User::where('role', 'petugas')->with('dusun')->latest()->get();
+        $dusuns = Dusun::all();
+        return view('petugas.index', compact('petugas', 'dusuns'));
     }
 
     /**
@@ -116,5 +118,21 @@ class PetugasController extends Controller
 
         return redirect()->route('petugas.index')
             ->with('success', 'Petugas berhasil dihapus.');
+    }
+
+    /**
+     * Assign petugas to dusun.
+     */
+    public function assignDusun(Request $request, string $id)
+    {
+        $request->validate([
+            'dusun_id' => 'required|exists:dusuns,id',
+        ]);
+
+        $petugas = User::findOrFail($id);
+        $petugas->update(['dusun_id' => $request->dusun_id]);
+
+        return redirect()->route('petugas.index')
+            ->with('success', 'Wilayah tugas berhasil diperbarui.');
     }
 }

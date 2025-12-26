@@ -179,7 +179,7 @@
                                 @if($p->status === 'pending')
                                     <form action="{{ route('penduduk.verify', $p->id) }}" method="POST" style="display:inline-block;">
                                         @csrf
-                                        <button type="submit" class="btn btn-sm btn-icon-action" title="Verifikasi" aria-label="Verifikasi" data-bs-toggle="tooltip" data-bs-placement="top">
+                                        <button type="submit" class="btn btn-sm" style="background-color: rgba(74, 222, 128, 0.2); color: #15803d; border: 1px solid rgba(74, 222, 128, 0.4);" title="Verifikasi" aria-label="Verifikasi" data-bs-toggle="tooltip" data-bs-placement="top">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check"><path d="M20 6 9 17l-5-5"/></svg>
                                         </button>
                                     </form>

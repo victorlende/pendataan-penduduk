@@ -43,14 +43,14 @@
                             <td>{{ $kk->dusun->nama_dusun ?? 'N/A' }}</td>
                             <td>{{ $kk->penduduks->count() }}</td>
                             <td class="text-nowrap text-center">
-                                <a href="{{ route('kk.show', $kk->id) }}" class="btn btn-sm btn-icon-action" title="Detail" aria-label="Detail">
+                                <a href="{{ route('kk.show', $kk->id) }}" class="btn btn-sm btn-icon-action" title="Detail" aria-label="Detail" data-bs-toggle="tooltip" data-bs-placement="top">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
                                 </a>
-                                <a href="{{ route('kk.edit', $kk->id) }}" class="btn btn-sm btn-icon-action" title="Edit" aria-label="Edit">
+                                <a href="{{ route('kk.edit', $kk->id) }}" class="btn btn-sm btn-icon-action" title="Edit" aria-label="Edit" data-bs-toggle="tooltip" data-bs-placement="top">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
                                 </a>
 
-                                <button type="button" class="btn btn-sm btn-icon-action" data-bs-toggle="modal" data-bs-target="#deleteModal" data-action="{{ route('kk.destroy', $kk->id) }}" title="Hapus" aria-label="Hapus">
+                                <button type="button" class="btn btn-sm btn-icon-action" data-bs-toggle="modal" data-bs-target="#deleteModal" data-action="{{ route('kk.destroy', $kk->id) }}" title="Hapus" aria-label="Hapus" data-bs-toggle="tooltip" data-bs-placement="top">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
                                 </button>
                             </td>

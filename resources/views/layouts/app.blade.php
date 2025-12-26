@@ -203,6 +203,44 @@
             .alert .btn-close:hover {
                 opacity: 1;
             }
+
+            /* Global Modal Centering */
+            .modal-dialog {
+                display: flex;
+                align-items: center;
+                min-height: calc(100% - 1rem);
+            }
+            @media (min-width: 576px) {
+                .modal-dialog {
+                    min-height: calc(100% - 3.5rem);
+                }
+            }
+            
+            /* Professional Modal Styling */
+            .modal-content {
+                border: none;
+                border-radius: 12px;
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            }
+            .modal-header {
+                border-bottom: 1px solid #f3f4f6;
+                padding: 1.5rem 1.5rem 1rem;
+            }
+            .modal-header .modal-title {
+                font-weight: 600;
+                color: #111827;
+            }
+            .modal-body {
+                padding: 1rem 1.5rem;
+                color: #4b5563;
+            }
+            .modal-footer {
+                border-top: none;
+                padding: 1rem 1.5rem 1.5rem;
+                background-color: #f9fafb;
+                border-bottom-left-radius: 12px;
+                border-bottom-right-radius: 12px;
+            }
         </style>
     </head>
     <body>
@@ -289,10 +327,12 @@
                 @auth
                 <div class="sidebar">
                     <nav class="nav flex-column mt-4">
+                        @if(auth()->user()->role !== 'masyarakat')
                         <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
                             <i data-lucide="folder-cog"></i>
                             Dashboard
                         </a>
+                        @endif
 
                         @if(auth()->user()->role == 'admin')
                             <div class="sidebar-heading">Main</div>
@@ -321,7 +361,7 @@
                             </a>
                             <a class="nav-link {{ request()->routeIs('laporan.index') ? 'active' : '' }}" href="{{ route('laporan.index') }}">
                                 <i data-lucide="file-text"></i>
-                                Laporan
+                                Data Laporan
                             </a>
                             <a class="nav-link {{ request()->routeIs('notifications.index') ? 'active' : '' }}" href="{{ route('notifications.index') }}">
                                 <i data-lucide="bell"></i>
@@ -348,10 +388,18 @@
                                 <i data-lucide="user-check"></i>
                                 Petugas Lapangan
                             </a>
+                            <a class="nav-link {{ request()->routeIs('notifications.adminTelegramSetup') ? 'active' : '' }}" href="{{ route('notifications.adminTelegramSetup') }}">
+                                <i data-lucide="settings"></i>
+                                Setup Telegram
+                            </a>
                         @elseif(auth()->user()->role == 'masyarakat')
                              <a class="nav-link {{ request()->routeIs('surat.my') ? 'active' : '' }}" href="{{ route('surat.my') }}">
                                 <i data-lucide="mail-check"></i>
                                 Surat Saya
+                            </a>
+                            <a class="nav-link {{ request()->routeIs('laporan.index') ? 'active' : '' }}" href="{{ route('laporan.index') }}">
+                                <i data-lucide="file-text"></i>
+                                Laporan
                             </a>
                         @endif
                     </nav>
@@ -373,6 +421,12 @@
         <script src="https://unpkg.com/lucide@latest"></script>
         <script>
             lucide.createIcons();
+
+            // Initialize Tooltips globally
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            });
         </script>
     </body>
     </html>

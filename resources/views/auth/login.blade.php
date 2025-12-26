@@ -261,11 +261,11 @@
                     <i data-lucide="building-2" width="40" height="40"></i>
                 </div>
 
-                <h1>Sistem Pendataan Penduduk</h1>
+                <h1>Sistem Informasi Pendataan Penduduk</h1>
                 <p>Website resmi pendataan penduduk Desa Naisau untuk memudahkan pengelolaan data kependudukan secara digital dan terintegrasi.</p>
 
                 <ul class="feature-list">
-                    <li class="feature-item">
+                    <!-- <li class="feature-item">
                         <div class="feature-icon">
                             <i data-lucide="users" width="24" height="24"></i>
                         </div>
@@ -273,7 +273,7 @@
                             <h6 class="mb-1 fw-semibold">Data Penduduk Terintegrasi</h6>
                             <p class="mb-0 small opacity-90">Kelola data penduduk dengan sistem yang terpadu</p>
                         </div>
-                    </li>
+                    </li> -->
                     <li class="feature-item">
                         <div class="feature-icon">
                             <i data-lucide="file-text" width="24" height="24"></i>
@@ -295,7 +295,7 @@
                 </ul>
 
                 <div class="mt-4 pt-4" style="border-top: 1px solid rgba(255,255,255,0.2);">
-                    <p class="small mb-0 opacity-75">&copy; {{ date('Y') }} Desa Naisau. All rights reserved.</p>
+                    <p class="small mb-0 opacity-75">&copy; {{ date('Y') }} Desa Naisau.</p>
                 </div>
             </div>
         </div>

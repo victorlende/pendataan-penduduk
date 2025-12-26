@@ -94,14 +94,14 @@
                                     <div class="d-flex gap-2 justify-content-center">
                                         <form action="{{ route('verifikasi.approve', $user->id) }}" method="POST" class="d-inline">
                                             @csrf
-                                            <button type="submit" class="btn btn-sm btn-success d-flex align-items-center gap-1" onclick="return confirm('Apakah Anda yakin ingin menyetujui akun ini?')" data-bs-toggle="tooltip" title="Terima Akun">
+                                            <button type="submit" class="btn btn-sm btn-success d-flex align-items-center gap-1" onclick="return confirm('Apakah Anda yakin ingin menyetujui akun ini?')" data-bs-toggle="tooltip" data-bs-placement="top" title="Terima Akun">
                                                 <i data-lucide="check" style="width: 14px; height: 14px;"></i>
                                                 <span>Terima</span>
                                             </button>
                                         </form>
                                         <form action="{{ route('verifikasi.reject', $user->id) }}" method="POST" class="d-inline">
                                             @csrf
-                                            <button type="submit" class="btn btn-sm btn-danger d-flex align-items-center gap-1" onclick="return confirm('Apakah Anda yakin ingin menolak akun ini?')" data-bs-toggle="tooltip" title="Tolak Akun">
+                                            <button type="submit" class="btn btn-sm btn-danger d-flex align-items-center gap-1" onclick="return confirm('Apakah Anda yakin ingin menolak akun ini?')" data-bs-toggle="tooltip" data-bs-placement="top" title="Tolak Akun">
                                                 <i data-lucide="x" style="width: 14px; height: 14px;"></i>
                                                 <span>Tolak</span>
                                             </button>

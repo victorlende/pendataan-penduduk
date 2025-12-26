@@ -4,6 +4,9 @@
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h3 class="mb-0">Permohonan Surat Keterangan</h3>
+        <a href="{{ route('letter-templates.index') }}" class="btn btn-outline-primary">
+            <i data-lucide="file-edit" style="width: 18px; height: 18px;"></i> Kelola Isi Surat
+        </a>
     </div>
 
             <div class="card">
@@ -23,6 +26,7 @@
                                     <th>Jenis Surat</th>
                                     <th>Keperluan</th>
                                     <th class="text-center">Status</th>
+                                    <th class="text-center">Update Status</th>
                                     <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
@@ -45,7 +49,7 @@
                                         <span class="badge rounded-pill bg-{{ $badgeClass }}">{{ ucfirst($s->status) }}</span>
                                     </td>
                                     <td class="text-center">
-                                        <form method="POST" action="{{ route('surat.updateStatus',$s->id) }}" class="d-flex justify-content-center align-items-center gap-2">
+                                        <form method="POST" action="{{ route('surat.updateStatus',$s->id) }}" class="d-flex justify-content-center align-items-center gap-2 m-0">
                                             @csrf
                                             <select name="status" class="form-select form-select-sm w-auto" onchange="this.style.display='none'; this.nextElementSibling.classList.remove('d-none'); this.form.submit()">
                                                 <option value="pending" {{ $s->status == 'pending' ? 'selected' : '' }}>Pending</option>
@@ -57,6 +61,17 @@
                                                 <span class="visually-hidden">Loading...</span>
                                             </div>
                                         </form>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center align-items-center gap-2">
+                                            @if($s->status == 'diproses')
+                                                <a href="{{ route('surat.print', $s->id) }}" target="_blank" class="btn btn-sm" style="background-color: rgba(74, 222, 128, 0.2); color: #15803d; border: 1px solid rgba(74, 222, 128, 0.4);" title="Buat Surat" data-bs-toggle="tooltip" data-bs-placement="top">
+                                                    <i data-lucide="printer" style="width: 16px; height: 16px;"></i>
+                                                </a>
+                                            @else
+                                                <span class="text-muted">-</span>
+                                            @endif
+                                        </div>
                                     </td>
                                 </tr>
                                 @endforeach

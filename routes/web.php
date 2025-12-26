@@ -27,11 +27,36 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'index'])->name('profile.index');
     Route::put('/profile', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
 
+    // Shared Laporan Routes
+    Route::get('/laporan', [LaporanController::class, 'index'])
+        ->name('laporan.index');
+
+    Route::get('/laporan/penduduk-dusun', [LaporanController::class, 'pendudukPerDusun'])
+        ->name('laporan.pendudukDusun');
+
+    Route::get('/laporan/penduduk-kk', [LaporanController::class, 'pendudukPerKK'])
+        ->name('laporan.pendudukKK');
+
+        Route::get('/laporan/rekap', [LaporanController::class, 'rekapPenduduk'])
+            ->name('laporan.rekap');
+
+        Route::get('/surat/{id}/print', [App\Http\Controllers\SuratPrintController::class, 'print'])
+            ->name('surat.print');
+
+        // Letter Templates Management
+        Route::get('/surat/templates', [App\Http\Controllers\LetterTemplateController::class, 'index'])
+            ->name('letter-templates.index');
+        Route::get('/surat/templates/{id}/edit', [App\Http\Controllers\LetterTemplateController::class, 'edit'])
+            ->name('letter-templates.edit');
+        Route::put('/surat/templates/{id}', [App\Http\Controllers\LetterTemplateController::class, 'update'])
+            ->name('letter-templates.update');
+
     Route::middleware(['role:admin'])->group(function () {
 
         Route::resource('dusun', DusunController::class);
         Route::resource('kk', KkController::class);
         Route::resource('petugas', \App\Http\Controllers\PetugasController::class);
+        Route::put('petugas/{id}/assign', [\App\Http\Controllers\PetugasController::class, 'assignDusun'])->name('petugas.assignDusun');
         Route::resource('mutasi', \App\Http\Controllers\MutasiController::class);
 
         Route::get('penduduk/create', [PendudukController::class, 'create'])->name('penduduk.create');
@@ -53,21 +78,15 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/surat/{id}/status', [SuratKeteranganController::class, 'updateStatus'])
             ->name('surat.updateStatus');
 
-            Route::get('/laporan', [LaporanController::class, 'index'])
-            ->name('laporan.index');
 
-        Route::get('/laporan/penduduk-dusun', [LaporanController::class, 'pendudukPerDusun'])
-            ->name('laporan.pendudukDusun');
-
-        Route::get('/laporan/penduduk-kk', [LaporanController::class, 'pendudukPerKK'])
-            ->name('laporan.pendudukKK');
-
-        Route::get('/laporan/rekap', [LaporanController::class, 'rekapPenduduk'])
-            ->name('laporan.rekap');
 
                 Route::get('/notifikasi', [NotificationController::class, 'index'])
         ->name('notifications.index');
         
+        Route::get('/notifikasi/telegram-sync', [NotificationController::class, 'syncTelegram'])->name('notifications.syncTelegram');
+        Route::post('/notifikasi/telegram-update', [NotificationController::class, 'updateTelegramId'])->name('notifications.updateTelegramId');
+        Route::get('/notifikasi/telegram-admin-setup', [NotificationController::class, 'adminTelegramSetup'])->name('notifications.adminTelegramSetup');
+
         Route::get('/verifikasi', [App\Http\Controllers\VerifikasiController::class, 'index'])->name('verifikasi.index');
         Route::post('/verifikasi/{id}/approve', [App\Http\Controllers\VerifikasiController::class, 'approve'])->name('verifikasi.approve');
         Route::post('/verifikasi/{id}/reject', [App\Http\Controllers\VerifikasiController::class, 'reject'])->name('verifikasi.reject');
@@ -85,6 +104,10 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['role:masyarakat', 'user.active'])->group(function () {
         Route::get('/surat-saya', [SuratKeteranganController::class, 'mySurat'])->name('surat.my');
         Route::post('/surat-saya', [SuratKeteranganController::class, 'storeRequest'])->name('surat.storeRequest');
+
+        // Telegram setup untuk masyarakat
+        Route::get('/telegram-setup', [NotificationController::class, 'userTelegramSetup'])->name('notifications.userTelegramSetup');
+        Route::post('/telegram-setup', [NotificationController::class, 'saveUserTelegramId'])->name('notifications.saveUserTelegramId');
     });
 });
 

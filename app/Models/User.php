@@ -23,11 +23,11 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
-        'status',
         'rt_rw',
         'telegram_chat_id',
         'phone_number',
         'nik',
+        'dusun_id',
     ];
 
     /**
@@ -139,5 +139,13 @@ class User extends Authenticatable
     public function scopeMasyarakat($query)
     {
         return $query->where('role', 'masyarakat');
+    }
+
+    /**
+     * Relasi ke Dusun (Wilayah Tugas Petugas)
+     */
+    public function dusun()
+    {
+        return $this->belongsTo(Dusun::class);
     }
 }

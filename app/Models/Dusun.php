@@ -18,4 +18,9 @@ class Dusun extends Model
     {
         return $this->hasMany(Kk::class);
     }
+
+    public function petugas()
+    {
+        return $this->hasMany(User::class, 'dusun_id')->where('role', 'petugas');
+    }
 }
