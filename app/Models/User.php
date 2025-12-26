@@ -26,6 +26,8 @@ class User extends Authenticatable
         'status',
         'rt_rw',
         'telegram_chat_id',
+        'phone_number',
+        'nik',
     ];
 
     /**

@@ -7,6 +7,14 @@
 
         <div class="card">
             <div class="card-body">
+                <div class="alert alert-info d-flex align-items-start gap-2" style="border: 1px solid #eaecf0;">
+                    <i data-lucide="info" class="flex-shrink-0 mt-1" style="width: 18px; height: 18px;"></i>
+                    <div>
+                        <span class="fw-bold">Informasi Penting:</span>
+                        <br>
+                        Pastikan data petugas yang dimasukkan adalah valid dan sesuai dengan identitas resmi (KTP/SK). Petugas akan memiliki akses untuk melakukan pendataan penduduk di wilayah tugasnya.
+                    </div>
+                </div>
                 <form action="{{ route('petugas.store') }}" method="POST">
                     @csrf
                     <div class="mb-3">
@@ -23,6 +31,23 @@
                         @error('email')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="nik" class="form-label">NIK</label>
+                            <input type="text" class="form-control @error('nik') is-invalid @enderror" id="nik" name="nik" value="{{ old('nik') }}" maxlength="16" required>
+                            @error('nik')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="phone_number" class="form-label">Nomor HP</label>
+                            <input type="text" class="form-control @error('phone_number') is-invalid @enderror" id="phone_number" name="phone_number" value="{{ old('phone_number') }}" required>
+                            @error('phone_number')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
                     </div>
 
                     <div class="mb-3">

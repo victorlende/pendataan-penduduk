@@ -62,7 +62,7 @@
     <div class="row g-4 mb-4">
         <div class="col-lg-6">
             <div class="card h-100 flat-card">
-                <div class="card-header bg-transparent border-bottom py-3 fw-bold text-secondary">Pekerjaan (Top 10)</div>
+                <div class="card-header bg-transparent border-bottom py-3 fw-bold text-secondary">Pekerjaan</div>
                 <div class="card-body">
                     <canvas id="jobChart" style="max-height: 350px;"></canvas>
                 </div>

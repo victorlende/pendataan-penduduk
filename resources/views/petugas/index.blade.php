@@ -27,6 +27,7 @@
                             <th>No</th>
                             <th>Nama</th>
                             <th>Email</th>
+                            <th>Nomor HP</th>
                             <th class="text-center">Aksi</th>
                         </tr>
                     </thead>
@@ -36,6 +37,7 @@
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $p->name }}</td>
                             <td>{{ $p->email }}</td>
+                            <td>{{ $p->phone_number }}</td>
                             <td class="text-nowrap text-center">
                                 <a href="{{ route('petugas.edit', $p->id) }}" class="btn btn-sm btn-icon-action" title="Edit" aria-label="Edit">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>

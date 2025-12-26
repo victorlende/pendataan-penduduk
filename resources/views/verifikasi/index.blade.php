@@ -2,56 +2,111 @@
 
 @section('content')
 <div class="container">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3 class="mb-0">Verifikasi Akun Masyarakat</h3>
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="mb-1 fw-bold">Verifikasi Akun Masyarakat</h3>
+            <p class="text-muted mb-0 small">Kelola permintaan verifikasi akun dari masyarakat</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <div class="badge bg-primary" style="font-size: 0.95rem; padding: 0.5rem 1rem;">
+                <i data-lucide="users" style="width: 16px; height: 16px;"></i>
+                <span class="ms-2">{{ $users->count() }} Menunggu</span>
+            </div>
+        </div>
     </div>
 
-    <div class="card border-0">
-        <div class="card-body">
-            @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
 
+    <div class="card">
+        <div class="card-body">
             @if($users->count() > 0)
                 <div class="table-responsive">
                     <table class="table table-hover align-middle" id="verifikasi-table">
-                        <thead class="table-light">
+                        <thead>
                             <tr>
-                                <th>Tanggal Daftar</th>
-                                <th>Nama</th>
-                                <th>NIK</th>
-                                <th>Email</th>
-                                <th class="text-center">Aksi</th>
+                                <th style="width: 5%;">#</th>
+                                <th style="width: 15%;">Tanggal Daftar</th>
+                                <th style="width: 20%;">Nama</th>
+                                <th style="width: 15%;">NIK</th>
+                                <th style="width: 20%;">Email</th>
+                                <th style="width: 10%;" class="text-center">Status</th>
+                                <th style="width: 15%;" class="text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($users as $user)
+                            @foreach($users as $index => $user)
                             <tr>
-                                <td>{{ $user->created_at->format('d/m/Y H:i') }}</td>
-                                <td>{{ $user->name }}</td>
                                 <td>
-                                    {{ $user->penduduk ? $user->penduduk->nik : '-' }}
-                                    @if(!$user->penduduk)
-                                        <span class="badge bg-danger">Tidak Terhubung</span>
+                                    <div class="d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; background: #f3f4f6; border-radius: 8px;">
+                                        <span class="fw-semibold text-secondary small">{{ $index + 1 }}</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i data-lucide="calendar" style="width: 16px; height: 16px; color: #6b7280;"></i>
+                                        <div>
+                                            <div class="fw-medium" style="font-size: 0.875rem;">{{ $user->created_at->format('d M Y') }} {{ $user->created_at->format('H:i') }}</div>
+                                            <!-- <div class="text-muted small">{{ $user->created_at->format('H:i') }}</div> -->
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div>
+                                            <div class="fw-semibold">{{ $user->name }}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    @if($user->penduduk)
+                                        <div class="d-flex align-items-center gap-2">
+                                            <i data-lucide="credit-card" style="width: 16px; height: 16px; color: #6b7280;"></i>
+                                            <span class="font-monospace">{{ $user->penduduk->nik }}</span>
+                                        </div>
+                                    @else
+                                        <span class="text-muted">-</span>
                                     @endif
                                 </td>
-                                <td>{{ $user->email }}</td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i data-lucide="mail" style="width: 16px; height: 16px; color: #6b7280;"></i>
+                                        <span style="font-size: 0.875rem;">{{ $user->email }}</span>
+                                    </div>
+                                </td>
                                 <td class="text-center">
-                                    <form action="{{ route('verifikasi.approve', $user->id) }}" method="POST" class="d-inline">
-                                        @csrf
-                                        <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Setujui akun ini?')">
-                                            <i data-lucide="check" style="width: 16px;"></i> Terima
-                                        </button>
-                                    </form>
-                                    <form action="{{ route('verifikasi.reject', $user->id) }}" method="POST" class="d-inline ms-1">
-                                        @csrf
-                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Tolak akun ini?')">
-                                            <i data-lucide="x" style="width: 16px;"></i> Tolak
-                                        </button>
-                                    </form>
+                                    @if($user->penduduk)
+                                        <span class="badge badge-pills bg-success">
+                                            <span>Aktif</span>
+                                        </span>
+                                    @else
+                                        <span class="badge badge-pills bg-warning">
+                                            <span>Belum Aktif</span>
+                                        </span>
+                                    @endif
+                                </td>
+                                <td>
+                                    <div class="d-flex gap-2 justify-content-center">
+                                        <form action="{{ route('verifikasi.approve', $user->id) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            <button type="submit" class="btn btn-sm btn-success d-flex align-items-center gap-1" onclick="return confirm('Apakah Anda yakin ingin menyetujui akun ini?')" data-bs-toggle="tooltip" title="Terima Akun">
+                                                <i data-lucide="check" style="width: 14px; height: 14px;"></i>
+                                                <span>Terima</span>
+                                            </button>
+                                        </form>
+                                        <form action="{{ route('verifikasi.reject', $user->id) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            <button type="submit" class="btn btn-sm btn-danger d-flex align-items-center gap-1" onclick="return confirm('Apakah Anda yakin ingin menolak akun ini?')" data-bs-toggle="tooltip" title="Tolak Akun">
+                                                <i data-lucide="x" style="width: 14px; height: 14px;"></i>
+                                                <span>Tolak</span>
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                             @endforeach
@@ -60,10 +115,13 @@
                 </div>
             @else
                 <div class="text-center py-5">
-                    <div class="text-muted mb-3">
-                        <i data-lucide="check-circle" style="width: 48px; height: 48px; color: #d1d5db;"></i>
+                    <div class="mb-4">
+                        <div class="d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px; background: linear-gradient(135deg, #34d399 0%, #10b981 100%); border-radius: 50%;">
+                            <i data-lucide="check-circle" style="width: 40px; height: 40px; color: white;"></i>
+                        </div>
                     </div>
-                    <h5 class="text-muted">Tidak ada akun yang perlu diverifikasi saat ini.</h5>
+                    <h5 class="fw-semibold mb-2">Semua Akun Terverifikasi</h5>
+                    <p class="text-muted mb-0">Tidak ada akun yang perlu diverifikasi saat ini.</p>
                 </div>
             @endif
         </div>
@@ -74,7 +132,34 @@
 @section('scripts')
 <script>
     $(document).ready(function() {
-        $('#verifikasi-table').DataTable();
+        // Initialize DataTable
+        $('#verifikasi-table').DataTable({
+            language: {
+                lengthMenu: "Tampilkan _MENU_ data per halaman",
+                info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+                infoEmpty: "Tidak ada data",
+                infoFiltered: "(difilter dari _MAX_ total data)",
+                zeroRecords: "Data tidak ditemukan",
+                search: "Cari:",
+                paginate: {
+                    first: "Pertama",
+                    last: "Terakhir",
+                    next: "Selanjutnya",
+                    previous: "Sebelumnya"
+                }
+            },
+            order: [[1, 'desc']], // Sort by date
+            pageLength: 10
+        });
+
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+
+        // Reinitialize Lucide icons
+        lucide.createIcons();
     });
 </script>
 @endsection

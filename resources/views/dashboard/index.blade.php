@@ -9,7 +9,7 @@
         </div>
         <div>
             <span class="badge bg-light text-dark border px-3 py-2 rounded-pill">
-                {{ \Carbon\Carbon::now()->translatedFormat('l, d F Y') }}
+                {{ \Carbon\Carbon::now()->locale('id')->translatedFormat('l, d F Y') }}
             </span>
         </div>
     </div>

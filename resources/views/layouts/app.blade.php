@@ -166,7 +166,7 @@
             }
 
             .badge.bg-primary {
-                background: linear-gradient(135deg, #818cf8 0%, #a78bfa 100%) !important;
+                background: linear-gradient(135deg, #3352ffff 0%, #1f93ffff 100%) !important;
                 color: #ffffff !important;
                 border: none;
             }
@@ -191,7 +191,7 @@
                 border: none;
             }
             .badge.bg-secondary {
-                background: linear-gradient(135deg, #a78bfa 0%, #c4b5fd 100%) !important;
+                background: linear-gradient(135deg, #8b96faff 0%, #c4b5fd 100%) !important;
                 color: #ffffff !important;
                 border: none;
             }
@@ -211,10 +211,8 @@
                 <div class="container-fluid px-4">
                     <a class="navbar-brand" href="{{ url('/') }}">
                         <div class="d-flex align-items-center">
-                            <div class="bg-primary text-white rounded p-1 me-2 d-flex align-items-center justify-content-center" style="width: 28px; height: 28px;">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-building-2"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg>
-                            </div>
-                            {{ config('app.name', 'Pendataan Penduduk') }}
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin-house-icon lucide-map-pin-house text-primary me-2"><path d="M15 22a1 1 0 0 1-1-1v-4a1 1 0 0 1 .445-.832l3-2a1 1 0 0 1 1.11 0l3 2A1 1 0 0 1 22 17v4a1 1 0 0 1-1 1z"/><path d="M18 10a8 8 0 0 0-16 0c0 4.993 5.539 10.193 7.399 11.799a1 1 0 0 0 .601.2"/><path d="M18 22v-3"/><circle cx="10" cy="10" r="3"/></svg>
+                            {{ str_replace('_', ' ', config('app.name', 'Pendataan Penduduk Desa Naisau')) }}
                         </div>
                     </a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
@@ -268,10 +266,6 @@
                                                 <i data-lucide="user" class="text-secondary" style="width: 16px; height: 16px;"></i>
                                                 <span>Profile Saya</span>
                                             </a>
-                                            <a class="dropdown-item py-2 px-3 d-flex align-items-center gap-2" href="{{ route('profile.index') }}">
-                                                <i data-lucide="settings" class="text-secondary" style="width: 16px; height: 16px;"></i>
-                                                <span>Pengaturan</span>
-                                            </a>
                                             <div class="dropdown-divider my-1"></div>
                                             <a class="dropdown-item py-2 px-3 d-flex align-items-center gap-2 text-danger" href="{{ route('logout') }}"
                                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
@@ -315,8 +309,15 @@
                                 Mutasi Penduduk
                             </a>
                             <a class="nav-link {{ request()->routeIs('surat.index') ? 'active' : '' }}" href="{{ route('surat.index') }}">
-                                <i data-lucide="mail"></i>
-                                Permintaan Surat
+                                <div class="d-flex w-100 justify-content-between align-items-center">
+                                    <span>
+                                        <i data-lucide="mail"></i>
+                                        Permintaan Surat
+                                    </span>
+                                    @if(\App\Models\SuratKeterangan::where('status', 'pending')->count() > 0)
+                                        <span class="badge bg-primary rounded-pill">{{ \App\Models\SuratKeterangan::where('status', 'pending')->count() }}</span>
+                                    @endif
+                                </div>
                             </a>
                             <a class="nav-link {{ request()->routeIs('laporan.index') ? 'active' : '' }}" href="{{ route('laporan.index') }}">
                                 <i data-lucide="file-text"></i>

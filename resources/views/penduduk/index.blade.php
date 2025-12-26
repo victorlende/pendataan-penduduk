@@ -4,7 +4,7 @@
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h3 class="mb-0">Data Penduduk</h3>
-        <a href="{{ route('penduduk.create') }}" class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Tambah Penduduk Baru">Tambah Penduduk</a>
+        <a href="{{ route('penduduk.create') }}" class="btn btn-primary">Tambah Penduduk</a>
     </div>
     <div class="card">
         <div class="card-body">
