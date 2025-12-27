@@ -7,14 +7,85 @@
             <h3 class="fw-bold mb-1">Laporan Data Penduduk</h3>
             <p class="text-secondary mb-0">Statistik demografi kependudukan</p>
         </div>
-        <!-- <div>
-            <button class="btn btn-outline-primary btn-sm" onclick="window.print()">
-                <i data-lucide="printer" width="16" height="16" class="me-1"></i> Cetak Laporan
+        <div class="d-flex gap-2">
+            <!-- Form Simpan Rekap -->
+            <form action="{{ route('laporan.store') }}" method="POST" onsubmit="return confirm('Apakah anda yakin ingin menyimpan snapshot laporan saat ini?')">
+                @csrf
+                <button type="submit" class="btn btn-outline-success">
+                    Generate Data Laporan
+                </button>
+            </form>
+            
+            <!-- Button Download -->
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#downloadModal">
+                Download Data
             </button>
-        </div> -->
+        </div>
     </div>
 
-    <!-- Row 1: Gender & Religion (Pie) -->
+    <!-- History Table (Moved to Top) -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0">Riwayat Laporan Statistik</h5>
+            </div>
+
+            @if(session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            <div class="table-responsive">
+                <table class="table table-sm table-bordered table-hover mb-0" id="rekap-table">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Tanggal Generate</th>
+                            <th class="text-center">Total Penduduk</th>
+                            <th class="text-center">Total KK</th>
+                            <th class="text-center">Lahir (Total)</th>
+                            <th class="text-center">Meninggal (Total)</th>
+                            <th class="text-center">Pindah (Total)</th>
+                            <th class="text-center">Dibuat Oleh</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($history as $row)
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>
+                                {{ $row->created_at->format('d-m-Y') }} 
+                                <span class="text-muted small">({{ $row->created_at->format('H:i') }})</span>
+                            </td>
+                            <td class="text-center">{{ number_format($row->total_penduduk) }}</td>
+                            <td class="text-center">{{ number_format($row->total_kk) }}</td>
+                            <td class="text-center">
+                                {{ number_format($row->total_lahir) }}
+                            </td>
+                            <td class="text-center">
+                                {{ number_format($row->total_meninggal) }}
+                            </td>
+                            <td class="text-center">
+                                {{ number_format($row->total_pindah) }}
+                            </td>
+                            <td class="text-center">
+                                {{ $row->creator->name ?? 'System' }}
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="8" class="text-center py-3 text-muted">
+                                Belum ada riwayat laporan tersimpan
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
     <div class="row g-4 mb-4">
         <div class="col-lg-6">
             <div class="card h-100 flat-card">
@@ -38,7 +109,6 @@
         </div>
     </div>
 
-    <!-- Row 2: Age & Education -->
     <div class="row g-4 mb-4">
         <div class="col-lg-6">
             <div class="card h-100 flat-card">
@@ -58,7 +128,7 @@
         </div>
     </div>
 
-    <!-- Row 3: Job & Marital Status -->
+
     <div class="row g-4 mb-4">
         <div class="col-lg-6">
             <div class="card h-100 flat-card">
@@ -76,6 +146,45 @@
                         <canvas id="maritalChart"></canvas>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div class="modal fade" id="downloadModal" tabindex="-1" aria-labelledby="downloadModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="downloadModalLabel">Download Data Penduduk</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('laporan.download') }}" method="GET" id="downloadForm">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="kategori" class="form-label">Filter Berdasarkan (Optional)</label>
+                            <select class="form-select" id="kategori" name="kategori">
+                                <option value="">Semua Data Penduduk</option>
+                                <option value="rekap_laporan" class="fw-bold">-- Riwayat Rekapitulasi Laporan --</option>
+                                <option value="jenis_kelamin">Jenis Kelamin</option>
+                                <option value="agama">Agama</option>
+                                <option value="kelompok_umur">Kelompok Umur</option>
+                                <option value="pendidikan_terakhir">Pendidikan Terakhir</option>
+                                <option value="pekerjaan">Pekerjaan</option>
+                                <option value="status_perkawinan">Status Perkawinan</option>
+                            </select>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary btn-download">
+                            <span class="spinner-border spinner-border-sm d-none me-1" role="status" aria-hidden="true"></span>
+                            <span class="btn-text">Download Excel</span>
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -97,20 +206,35 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-    // Smooth/Pastel Colors
+    document.getElementById('downloadForm').addEventListener('submit', function(e) {
+        const btn = this.querySelector('.btn-download');
+        const spinner = btn.querySelector('.spinner-border');
+        const text = btn.querySelector('.btn-text');
+        
+        btn.disabled = true;
+        spinner.classList.remove('d-none');
+        text.textContent = 'Downloading...';
+
+        setTimeout(() => {
+            btn.disabled = false;
+            spinner.classList.add('d-none');
+            text.textContent = 'Download Excel';
+
+        }, 3000);
+    });
+
     const colors = [
-        '#a8d5fa', // Soft Blue
-        '#fbb4ae', // Soft Red/Pink
-        '#ccebc5', // Soft Green
-        '#decbe4', // Soft Purple
-        '#fed9a6', // Soft Orange
-        '#ffffcc', // Soft Yellow
-        '#e5d8bd', // Soft Brown
-        '#b3cde3', // Blue Grey
-        '#fddaec'  // Pink
+        '#a8d5fa', 
+        '#fbb4ae', 
+        '#ccebc5',
+        '#decbe4', 
+        '#fed9a6', 
+        '#ffffcc', 
+        '#e5d8bd', 
+        '#b3cde3', 
+        '#fddaec'  
     ];
     
-    // Border colors (slightly darker for definition)
     const borderColors = [
         '#36a2eb', '#ff6384', '#4bc0c0', '#9966ff', '#ff9f40', '#ffcd56', '#d8b365', '#5d9ecb', '#f781bf'
     ];
@@ -132,7 +256,7 @@
         }
     };
 
-    // 1. Gender Chart
+
     const genderCtx = document.getElementById('genderChart').getContext('2d');
     new Chart(genderCtx, {
         type: 'pie',
@@ -148,7 +272,7 @@
         options: chartOptions
     });
 
-    // 2. Age Chart
+
     const ageCtx = document.getElementById('ageChart').getContext('2d');
     new Chart(ageCtx, {
         type: 'bar',
@@ -172,7 +296,6 @@
         }
     });
 
-    // 3. Education Chart
     const eduCtx = document.getElementById('eduChart').getContext('2d');
     new Chart(eduCtx, {
         type: 'bar',
@@ -194,11 +317,11 @@
         }
     });
 
-    // 4. Job Chart
+
     const jobCtx = document.getElementById('jobChart').getContext('2d');
     new Chart(jobCtx, {
         type: 'bar',
-        indexAxis: 'y', // Horizontal bar
+        indexAxis: 'y', 
         data: {
             labels: {!! json_encode($pekerjaan->keys()) !!},
             datasets: [{
@@ -216,7 +339,7 @@
         }
     });
 
-    // 5. Marital Status Chart
+
     const maritalCtx = document.getElementById('maritalChart').getContext('2d');
     new Chart(maritalCtx, {
         type: 'doughnut',
@@ -232,7 +355,7 @@
         options: { ...chartOptions, cutout: '65%' }
     });
 
-    // 6. Religion Chart
+
     const religionCtx = document.getElementById('religionChart').getContext('2d');
     new Chart(religionCtx, {
         type: 'pie',

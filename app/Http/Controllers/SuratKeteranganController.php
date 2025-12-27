@@ -111,7 +111,7 @@ class SuratKeteranganController extends Controller
             // Kirim notifikasi Telegram ke Admin
             $telegram = new TelegramService();
             $message = "🔔 <b>Permintaan Surat Baru</b>\n\n" .
-                       "👤 <b>Pemohon:</b> " . $penduduk->nama . "\n" .
+                       "👤 <b>Pemohon:</b> " . $penduduk->nama_lengkap . "\n" .
                        "📄 <b>Jenis:</b> " . $request->jenis_surat . "\n" .
                        "📝 <b>Keperluan:</b> " . $request->keperluan . "\n\n" .
                        "Mohon segera dicek di panel admin.";

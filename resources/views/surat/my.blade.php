@@ -9,7 +9,7 @@
                 <i class="bi bi-telegram"></i>Terima Notifikasi Telegram
             </a>
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#requestModal">
-                <i class="bi bi-plus-lg me-1"></i> Buat Pengajuan
+                <i class="bi bi-plus-lg me-1"></i> Buat Pengajuan Surat
             </button>
         </div>
     </div>

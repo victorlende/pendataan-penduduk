@@ -15,7 +15,12 @@
         </li>
         <li class="nav-item">
             <a class="nav-link {{ $currentStatus == 'pending' ? 'bg-dark text-white active' : 'text-dark' }}" 
-            href="{{ route('penduduk.index', ['status' => 'pending']) }}">Pending</a>
+            href="{{ route('penduduk.index', ['status' => 'pending']) }}">
+                Pending
+                @if($pendingCount > 0)
+                    <span class="text-danger fw-bold ms-1">( {{ $pendingCount }} ) </span>
+                @endif
+            </a>
         </li>
         <li class="nav-item">
             <a class="nav-link {{ $currentStatus == 'verified' ? 'bg-dark text-white active' : 'text-dark' }}" 
@@ -23,7 +28,7 @@
         </li>
         <li class="nav-item">
             <a class="nav-link {{ $currentStatus == 'rejected' ? 'bg-dark text-white active' : 'text-dark' }}" 
-            href="{{ route('penduduk.index', ['status' => 'rejected']) }}">Rejected</a>
+            href="{{ route('penduduk.index', ['status' => 'rejected']) }}">Ditolak</a>
         </li>
     </ul>
 
@@ -142,54 +147,123 @@
                 </div>
             </div>
 
-            <div class="table-responsive mt-3">
-                <table class="table table-sm table-bordered table-hover" id="penduduk-table">
-                    <thead>
-                        <tr>
-                            <th>NIK</th>
-                            <th>Nama Lengkap</th>
-                            <th>Dusun</th>
-                            <th class="text-center">Status Verifikasi</th>
-                            <th class="text-center">Status Kependudukan</th>
-                            <th class="text-center">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($penduduk as $p)
-                        <tr>
-                            <td>{{ $p->nik }}</td>
-                            <td>{{ $p->nama_lengkap }}</td>
-                            <td>{{ $p->kk->dusun->nama_dusun ?? 'N/A' }}</td>
-                            <td class="text-center">
-                                <span class="badge rounded-pill bg-{{ $p->status == 'verified' ? 'success' : ($p->status == 'pending' ? 'warning' : 'danger') }}">{{ $p->status }}</span>
-                            </td>
-                            <td class="text-center">{{ $p->status_penduduk }}</td>
-                            <td class="text-nowrap text-center">
-                                <a href="{{ route('penduduk.show', $p->id) }}" class="btn btn-sm btn-icon-action" title="Detail" aria-label="Detail" data-bs-toggle="tooltip" data-bs-placement="top">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-                                </a>
-                                <a href="{{ route('penduduk.edit', $p->id) }}" class="btn btn-sm btn-icon-action" title="Edit" aria-label="Edit" data-bs-toggle="tooltip" data-bs-placement="top">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
-                                </a>
+            <style>
+                .btn-action-verify {
+                    background-color: rgba(74, 222, 128, 0.2); color: #15803d; border: 1px solid rgba(74, 222, 128, 0.4);
+                }
+                .btn-action-verify:hover {
+                    background-color: rgba(74, 222, 128, 0.4); color: #15803d;
+                }
+                .btn-action-reject {
+                    background-color: rgba(239, 68, 68, 0.2); color: #b91c1c; border: 1px solid rgba(239, 68, 68, 0.4);
+                }
+                .btn-action-reject:hover {
+                    background-color: rgba(239, 68, 68, 0.4); color: #b91c1c;
+                }
 
-                                <button type="button" class="btn btn-sm btn-icon-action" data-bs-toggle="modal" data-bs-target="#deleteModal" data-action="{{ route('penduduk.destroy', $p->id) }}" title="Hapus" aria-label="Hapus" data-bs-toggle="tooltip" data-bs-placement="top">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                .table-responsive {
+                    overflow-x: auto;
+                    -webkit-overflow-scrolling: touch;
+                }
+                
+                /* Sticky Column Styles */
+                table#penduduk-table thead th:first-child,
+                table#penduduk-table tbody td:first-child {
+                    position: sticky;
+                    left: 0;
+                    background-color: #fff;
+                    z-index: 10;
+                    box-shadow: 2px 0 5px -2px rgba(0,0,0,0.1);
+                    min-width: 150px;
+                }
+
+                table#penduduk-table thead th:nth-child(2),
+                table#penduduk-table tbody td:nth-child(2) {
+                    position: sticky;
+                    left: 150px; /* Width of first column */
+                    background-color: #fff;
+                    z-index: 10;
+                    box-shadow: 2px 0 5px -2px rgba(0,0,0,0.1);
+                    min-width: 180px; /* Increased for buttons */
+                }
+
+                /* Ensure header is above body columns */
+                table#penduduk-table thead th:first-child,
+                table#penduduk-table thead th:nth-child(2) {
+                    z-index: 20;
+                    background-color: #f8f9fa; /* Match typical header bg */
+                }
+            </style>
+
+            <!-- Removed manual .table-responsive wrapper -->
+            <table class="table table-sm table-bordered table-hover text-nowrap" id="penduduk-table">
+                <thead class="table-light">
+                    <tr>
+                        <th class="align-middle">NIK</th>
+                        <th class="align-middle text-center">Aksi</th>
+                        <th class="align-middle text-center">Status Verifikasi</th>
+                        <th class="align-middle">Nama Lengkap</th>
+                        <th class="align-middle">Dusun</th>
+                        <th class="align-middle">RT/RW</th>
+                        <th class="align-middle">Jenis Kelamin</th>
+                        <th class="align-middle">Tempat, Tgl Lahir</th>
+                        <th class="align-middle">Agama</th>
+                        <th class="align-middle">Pendidikan</th>
+                        <th class="align-middle">Pekerjaan</th>
+                        <th class="align-middle">Status Kawin</th>
+                        <th class="align-middle">SHDK</th>
+                        <th class="align-middle">Nama Ayah</th>
+                        <th class="align-middle">Nama Ibu</th>
+
+                        <th class="align-middle text-center">Status Penduduk</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($penduduk as $p)
+                    <tr>
+                        <td>{{ $p->nik }}</td>
+                        <td class="text-nowrap text-center">
+                            <a href="{{ route('penduduk.show', $p->id) }}" class="btn btn-sm btn-icon-action" title="Detail" aria-label="Detail" data-bs-toggle="tooltip" data-bs-placement="top">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                            </a>
+                            <a href="{{ route('penduduk.edit', $p->id) }}" class="btn btn-sm btn-icon-action" title="Edit" aria-label="Edit" data-bs-toggle="tooltip" data-bs-placement="top">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                            </a>
+
+                            <button type="button" class="btn btn-sm btn-icon-action" data-bs-toggle="modal" data-bs-target="#deleteModal" data-action="{{ route('penduduk.destroy', $p->id) }}" title="Hapus" aria-label="Hapus" data-bs-toggle="tooltip" data-bs-placement="top">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                            </button>
+
+                            @if($p->status === 'pending')
+                                <button type="button" class="btn btn-sm btn-action-verify" data-bs-toggle="modal" data-bs-target="#verifyModal" data-action="{{ route('penduduk.verify', $p->id) }}" title="Verifikasi" aria-label="Verifikasi" data-bs-toggle="tooltip" data-bs-placement="top">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check"><path d="M20 6 9 17l-5-5"/></svg>
                                 </button>
+                                <button type="button" class="btn btn-sm btn-action-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-action="{{ route('penduduk.reject', $p->id) }}" title="Tolak" aria-label="Tolak" data-bs-toggle="tooltip" data-bs-placement="top">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                                </button>
+                            @endif
+                        </td>
+                        <td class="text-center">
+                            <span class="badge rounded-pill bg-{{ $p->status == 'verified' ? 'success' : ($p->status == 'pending' ? 'warning' : 'danger') }}">{{ $p->status }}</span>
+                        </td>
+                        <td>{{ $p->nama_lengkap }}</td>
+                        <td>{{ $p->dusun->nama_dusun ?? 'N/A' }}</td>
+                        <td>{{ $p->rt_rw ?? '-' }}</td>
+                        <td>{{ $p->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan' }}</td>
+                        <td>{{ $p->tempat_lahir }}, {{ \Carbon\Carbon::parse($p->tanggal_lahir)->translatedFormat('d F Y') }}</td>
+                        <td>{{ $p->agama ?? '-' }}</td>
+                        <td>{{ $p->pendidikan_terakhir ?? '-' }}</td>
+                        <td>{{ $p->pekerjaan ?? '-' }}</td>
+                        <td>{{ $p->status_perkawinan ?? '-' }}</td>
+                        <td>{{ $p->status_dalam_keluarga ?? '-' }}</td>
+                        <td>{{ $p->nama_ayah ?? '-' }}</td>
+                        <td>{{ $p->nama_ibu ?? '-' }}</td>
 
-                                @if($p->status === 'pending')
-                                    <form action="{{ route('penduduk.verify', $p->id) }}" method="POST" style="display:inline-block;">
-                                        @csrf
-                                        <button type="submit" class="btn btn-sm" style="background-color: rgba(74, 222, 128, 0.2); color: #15803d; border: 1px solid rgba(74, 222, 128, 0.4);" title="Verifikasi" aria-label="Verifikasi" data-bs-toggle="tooltip" data-bs-placement="top">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check"><path d="M20 6 9 17l-5-5"/></svg>
-                                        </button>
-                                    </form>
-                                @endif
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
+                        <td class="text-center">{{ $p->status_penduduk }}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
         </div>
     </div>
         </div>
@@ -216,15 +290,67 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Modal Konfirmasi Verifikasi -->
+    <div class="modal fade" id="verifyModal" tabindex="-1" aria-labelledby="verifyModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="verifyModalLabel">Konfirmasi Verifikasi</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Apakah Anda telah memastikan validitas NIK dan kesesuaian data lainnya?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+                    <form id="verifyForm" method="POST" class="d-inline">
+                        @csrf
+                        <button type="submit" class="btn btn-success">Verifikasi</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Konfirmasi Tolak -->
+    <div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="rejectModalLabel">Konfirmasi Penolakan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="rejectForm" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <p>Apakah Anda yakin ingin menolak data ini?</p>
+                        <div class="mb-3">
+                            <label for="alasan_penolakan" class="form-label">Alasan Penolakan <span class="text-danger">*</span></label>
+                            <textarea class="form-control" id="alasan_penolakan" name="alasan_penolakan" rows="3" required placeholder="Contoh: Data NIK tidak valid / Foto KTP buram"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-danger">Tolak Data</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
 @endsection
 
 @section('scripts')
 <script>
     $(document).ready(function() {
-        // DataTable without search (because we have custom filter)
+        // DataTable configuration
         $('#penduduk-table').DataTable({
             searching: false,  // Disable default search
+            dom: "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
+                 "<'row'<'col-sm-12'<'table-responsive'tr>>>" +
+                 "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
             language: {
                 lengthMenu: "Tampilkan _MENU_ data per halaman",
                 info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
@@ -245,6 +371,21 @@
             var action = button.data('action');
             var modal = $(this);
             modal.find('#deleteForm').attr('action', action);
+        });
+
+        $('#verifyModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var action = button.data('action');
+            var modal = $(this);
+            modal.find('#verifyForm').attr('action', action);
+        });
+
+        $('#rejectModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var action = button.data('action');
+            var modal = $(this);
+            modal.find('#rejectForm').attr('action', action);
+            modal.find('#alasan_penolakan').val(''); // Reset textarea
         });
 
         // Enable tooltips

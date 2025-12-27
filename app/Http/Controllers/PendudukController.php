@@ -77,10 +77,12 @@ class PendudukController extends Controller
         }
 
         $penduduk = $query->latest()->get();
+        $pendingCount = Penduduk::where('status', 'pending')->count();
 
         return view('penduduk.index', [
             'penduduk' => $penduduk,
-            'currentStatus' => $status
+            'currentStatus' => $status,
+            'pendingCount' => $pendingCount
         ]);
     }
 
@@ -90,7 +92,8 @@ class PendudukController extends Controller
     public function create()
     {
         $kks = Kk::all();
-        return view('penduduk.create', compact('kks'));
+        $dusuns = Dusun::all();
+        return view('penduduk.create', compact('kks', 'dusuns'));
     }
 
     /**
@@ -117,16 +120,18 @@ class PendudukController extends Controller
             'nama_ayah' => 'required|string',
             'nama_ibu' => 'required|string',
             'no_telp' => 'nullable|string',
+            'dusun_id' => 'required|exists:dusuns,id',
+            'rt' => 'required|string',
+            'rw' => 'required|string',
             'photo_ktp' => 'nullable|image|max:2048', // Max 2MB
         ]);
 
         $kk = Kk::findOrFail($request->kk_id);
 
-        $data = $request->all();
+        $data = $request->except(['rt', 'rw']);
         $data['created_by'] = Auth::id();
         $data['no_kk'] = $kk->no_kk; // Get no_kk from the selected KK
-        $data['rt_rw'] = $kk->rt . '/' . $kk->rw; // Get rt_rw from the selected KK
-        $data['dusun_id'] = $kk->dusun_id; // Inherit dusun from KK
+        $data['rt_rw'] = $request->rt . '/' . $request->rw;
         $data['status'] = 'verified'; // Data added by admin is automatically verified
 
         if ($request->hasFile('photo_ktp')) {
@@ -154,7 +159,8 @@ class PendudukController extends Controller
     public function edit(Penduduk $penduduk)
     {
         $kks = Kk::all();
-        return view('penduduk.edit', compact('penduduk', 'kks'));
+        $dusuns = Dusun::all();
+        return view('penduduk.edit', compact('penduduk', 'kks', 'dusuns'));
     }
 
     /**
@@ -181,15 +187,17 @@ class PendudukController extends Controller
             'nama_ayah' => 'required|string',
             'nama_ibu' => 'required|string',
             'no_telp' => 'nullable|string',
+            'dusun_id' => 'required|exists:dusuns,id',
+            'rt' => 'required|string',
+            'rw' => 'required|string',
             'photo_ktp' => 'nullable|image|max:2048',
         ]);
 
         $kk = Kk::findOrFail($request->kk_id);
 
-        $data = $request->all();
+        $data = $request->except(['rt', 'rw']);
         $data['no_kk'] = $kk->no_kk; // Update no_kk from the selected KK
-        $data['rt_rw'] = $kk->rt . '/' . $kk->rw; // Update rt_rw from the selected KK
-        $data['dusun_id'] = $kk->dusun_id; // Update dusun from KK
+        $data['rt_rw'] = $request->rt . '/' . $request->rw;
 
         if ($request->hasFile('photo_ktp')) {
             // Delete old photo if exists
@@ -236,5 +244,31 @@ class PendudukController extends Controller
 
         return redirect()->route('penduduk.index')
             ->with('success', 'Data penduduk berhasil diverifikasi.');
+    }
+
+    /**
+     * Tolak data (hasil input mobile)
+     */
+    public function reject(Request $request, $id)
+    {
+        $request->validate([
+            'alasan_penolakan' => 'required|string|max:500'
+        ]);
+
+        $penduduk = Penduduk::findOrFail($id);
+
+        $penduduk->status = 'rejected';
+        $penduduk->alasan_penolakan = $request->alasan_penolakan;
+        $penduduk->save();
+
+        // kirim notifikasi ke petugas/masyarakat
+        Notification::create([
+            'user_id' => $penduduk->created_by,
+            'title'   => 'Data Ditolak',
+            'message' => 'Data penduduk atas nama '.$penduduk->nama_lengkap.' ditolak. Alasan: ' . $request->alasan_penolakan
+        ]);
+
+        return redirect()->route('penduduk.index')
+            ->with('success', 'Data penduduk berhasil ditolak.');
     }
 }

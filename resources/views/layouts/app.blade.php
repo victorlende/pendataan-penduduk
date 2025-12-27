@@ -360,10 +360,10 @@
                                 <i data-lucide="file-text"></i>
                                 Data Laporan
                             </a>
-                            <a class="nav-link {{ request()->routeIs('notifications.index') ? 'active' : '' }}" href="{{ route('notifications.index') }}">
+                            <!-- <a class="nav-link {{ request()->routeIs('notifications.index') ? 'active' : '' }}" href="{{ route('notifications.index') }}">
                                 <i data-lucide="bell"></i>
                                 Notifikasi
-                            </a>
+                            </a> -->
                             <a class="nav-link {{ request()->routeIs('verifikasi.index') ? 'active' : '' }}" href="{{ route('verifikasi.index') }}">
                                 <div class="d-flex w-100 justify-content-between align-items-center">
                                     <span>

@@ -40,6 +40,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/laporan/rekap', [LaporanController::class, 'rekapPenduduk'])
             ->name('laporan.rekap');
 
+        Route::get('/laporan/download', [LaporanController::class, 'download'])
+            ->name('laporan.download');
+
+        Route::post('/laporan', [LaporanController::class, 'store'])
+            ->name('laporan.store');
+
         Route::get('/surat/{id}/print', [App\Http\Controllers\SuratPrintController::class, 'print'])
             ->name('surat.print');
 
@@ -72,6 +78,8 @@ Route::middleware(['auth'])->group(function () {
         
         Route::post('/penduduk/{id}/verify', [PendudukController::class, 'verify'])
             ->name('penduduk.verify');
+        Route::post('/penduduk/{id}/reject', [PendudukController::class, 'reject'])
+            ->name('penduduk.reject');
         Route::get('/surat', [SuratKeteranganController::class, 'index'])
             ->name('surat.index');
 

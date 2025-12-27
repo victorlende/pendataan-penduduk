@@ -70,7 +70,12 @@ class TelegramService
             return false;
         }
 
-        $this->sendMessage($this->adminChatId, $message);
+        $chatIds = explode(',', $this->adminChatId);
+
+        foreach ($chatIds as $id) {
+            $this->sendMessage(trim($id), $message);
+        }
+        
         return true;
     }
 

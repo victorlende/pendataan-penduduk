@@ -289,7 +289,7 @@
                         </div>
                         <div>
                             <h6 class="mb-1 fw-semibold">Aman & Terpercaya</h6>
-                            <p class="mb-0 small opacity-90">Data Anda terlindungi dengan sistem keamanan terbaik</p>
+                            <p class="mb-0 small opacity-90">Data Anda terlindungi dengan baik</p>
                         </div>
                     </li>
                 </ul>

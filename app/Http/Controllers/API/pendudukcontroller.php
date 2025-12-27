@@ -23,11 +23,6 @@ class PendudukController extends Controller
 
         $query = Penduduk::with('creator:id,name,rt_rw');
 
-        // Filter berdasarkan RT/RW petugas
-        if ($user->rt_rw) {
-            $query->where('rt_rw', $user->rt_rw);
-        }
-
         // Search
         if ($request->has('search')) {
             $query->search($request->search);
@@ -102,6 +97,7 @@ class PendudukController extends Controller
             'nama_ayah' => 'nullable|string|max:255',
             'nama_ibu' => 'nullable|string|max:255',
             'rt_rw' => 'required|string|max:10',
+            'dusun_id' => 'required|exists:dusuns,id',
             'kecamatan' => 'nullable|string|max:100',
             'kelurahan' => 'nullable|string|max:100',
             'alamat_lengkap' => 'required|string',
@@ -117,15 +113,7 @@ class PendudukController extends Controller
             ], 422);
         }
 
-        // Validasi RT/RW sesuai dengan petugas
         $user = $request->user();
-        if ($user->rt_rw && $request->rt_rw !== $user->rt_rw) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Anda hanya dapat menginput data untuk wilayah RT/RW: ' . $user->rt_rw,
-            ], 403);
-        }
-
         $data = $validator->validated();
         $data['created_by'] = $user->id;
         $data['is_synced'] = true; // Langsung dari API berarti sudah sync
@@ -181,6 +169,7 @@ class PendudukController extends Controller
             'nama_ayah' => 'nullable|string|max:255',
             'nama_ibu' => 'nullable|string|max:255',
             'rt_rw' => 'required|string|max:10',
+            'dusun_id' => 'required|exists:dusuns,id',
             'kecamatan' => 'nullable|string|max:100',
             'kelurahan' => 'nullable|string|max:100',
             'alamat_lengkap' => 'required|string',

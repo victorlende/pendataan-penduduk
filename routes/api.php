@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\DusunController;
 use App\Http\Controllers\API\PendudukController;
 use App\Http\Controllers\API\SyncController;
 use Illuminate\Http\Request;
@@ -25,6 +26,9 @@ Route::middleware('auth:sanctum')->group(function () {
     // Auth
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
+
+    // Dusun
+    Route::get('/dusun', [DusunController::class, 'index']);
 
     // Penduduk CRUD
     Route::get('/penduduk', [PendudukController::class, 'index']);
